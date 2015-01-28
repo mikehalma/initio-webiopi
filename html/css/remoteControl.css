@@ -1,0 +1,66 @@
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+#controls {
+    height: 100%;
+}
+
+
+button {
+    font-size: 24pt;
+    font-weight: bold;
+    color: white;
+    height: 100%;
+}
+
+button.Default {
+    background: -webkit-linear-gradient(#5C5C9D, #29296A); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(#5C5C9D, #29296A); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(#5C5C9D, #29296A); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(#5C5C9D, #29296A); /* Standard syntax */
+}
+
+.grid-container{
+    width: 100%; 
+    max-width: 1200px;      
+}
+
+.row {
+    height: 33.33%;
+}
+
+/*-- our cleafix hack -- */ 
+.row:before, 
+.row:after {
+    content:"";
+    display: table ;
+    clear:both;
+}
+
+[class*='col-'] {
+    float: left; 
+    min-height: 1px; 
+    width: 16.66%; 
+/*-- our gutter -- */
+    padding: 12px; 
+}
+
+.col-1{ width: 33.33%; }
+.col-2{ width: 33.33%; }
+.col-3{ width: 33.33%; }
+
+.outline, .outline *{
+    outline: 1px solid #F6A1A1; 
+}
+
+
+/*-- some extra column content styling --*/
+[class*='col-'] > p {
+    background-color: #FFC2C2; 
+    padding: 0;
+    margin: 0;
+    text-align: center; 
+    color: white; 
+}
