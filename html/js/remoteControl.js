@@ -4,7 +4,6 @@ webiopi().ready(function() {
     });
     // $("#controls").append(sonarUp);
 
-//    var leftIrStatus = webiopi().createButton("leftIr", "Left IR", function() {
     setInterval(function() {
         webiopi().callMacro("irStatus", [], function(macro, args, response) {
             var status = JSON.parse(response);
@@ -43,11 +42,6 @@ webiopi().ready(function() {
     setIrImgSize('rightIr');
     setIrImgSize('leftLine');
     setIrImgSize('rightLine');
-
-
- //   });
-    // $("#controls").append(leftIrStatus);
-
 
     var forwardLeft = webiopi().createButton("forwardLeft", "", function() {
         webiopi().callMacro("forwardLeft");
