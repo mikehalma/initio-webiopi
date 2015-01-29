@@ -1,5 +1,6 @@
 import initio
 import webiopi
+import json
 
 # Define pins for Pan/Tilt
 pan = 0
@@ -26,10 +27,19 @@ def sonarUp():
     global pVal
     pVal += 10
     doServos()
-   
+
 @webiopi.macro
-def leftIrStatus():
-    if initio.irLeft():
+def irStatus():
+    status = {}
+    status["left"] = initio.irLeft()
+    status["leftLine"] = initio.irLeftLine()
+    status["right"] = initio.irRight()
+    status["rightLine"] = initio.irRightLine()
+    return json.dumps(status)
+
+@webiopi.macro
+def rightItStatus():
+    if initio.irRight():
         return '{"status":true}'
     else:
         return '{"status":false}'
@@ -45,27 +55,27 @@ def stop():
 @webiopi.macro
 def reverse():
     initio.reverse(100)
-    
+
 @webiopi.macro
 def spinLeft():
     initio.spinLeft(100)
-    
+
 @webiopi.macro
 def spinRight():
     initio.spinRight(100)
-    
+
 @webiopi.macro
 def forwardLeft():
     initio.turnForward(10, 100)
-    
+
 @webiopi.macro
 def forwardRight():
     initio.turnForward(100, 10)
-    
+
 @webiopi.macro
 def reverseLeft():
     initio.turnReverse(10, 100)
-    
+
 @webiopi.macro
 def reverseRight():
     initio.turnReverse(100, 10)

@@ -4,18 +4,50 @@ webiopi().ready(function() {
     });
     // $("#controls").append(sonarUp);
 
-    var leftIrStatus = webiopi().createButton("leftIr", "Left IR", function() {
-        webiopi().callMacro("leftIrStatus", [], function(macro, args, response) {
-            var status = JSON.parse(response.split(";"))['status'];
+//    var leftIrStatus = webiopi().createButton("leftIr", "Left IR", function() {
+    setInterval(function() {
+        webiopi().callMacro("irStatus", [], function(macro, args, response) {
+            var status = JSON.parse(response);
             console.log('Status=' + status);
-            if(status) {
-                $('#leftIr').css('background-color','red');
+            if(status.left) {
+                $('img.leftIrTrue').show();
+                $('img.leftIrFalse').hide();
             } else {
-                $('#leftIr').css('background-color','white');
+                $('img.leftIrFalse').show();
+                $('img.leftIrTrue').hide();
+            }
+            if(status.leftLine) {
+                $('img.leftLineTrue').show();
+                $('img.leftLineFalse').hide();
+            } else {
+                $('img.leftLineFalse').show();
+                $('img.leftLineTrue').hide();
+            }
+            if(status.right) {
+                $('img.rightIrTrue').show();
+                $('img.rightIrFalse').hide();
+            } else {
+                $('img.rightIrFalse').show();
+                $('img.rightIrTrue').hide();
+            }
+            if(status.rightLine) {
+                $('img.rightLineTrue').show();
+                $('img.rightLineFalse').hide();
+            } else {
+                $('img.rightLineFalse').show();
+                $('img.rightLineTrue').hide();
             }
         });
-    });
+    }, 1000);
+    setIrImgSize('leftIr');
+    setIrImgSize('rightIr');
+    setIrImgSize('leftLine');
+    setIrImgSize('rightLine');
+
+
+ //   });
     // $("#controls").append(leftIrStatus);
+
 
     var forwardLeft = webiopi().createButton("forwardLeft", "", function() {
         webiopi().callMacro("forwardLeft");
@@ -71,12 +103,12 @@ webiopi().ready(function() {
     $("#row3").append(reverseRight);
     setImg('reverseRight', 'reverse-right.png');
 
-//    webiopi().refreshGPIO(true);
+    // webiopi().refreshGPIO(true);
 });
 
-function setImg(id, imgSrc) {
-    var $button = $('#'+id);
-    $button.addClass('col-2');
+function setImg(buttonId, imgSrc) {
+    var $button = $('#' + buttonId);
+    $button.addClass('col-3');
     var getSize = function() {
         var h = $button.height();
         var w = $button.width();
@@ -93,3 +125,18 @@ function setImg(id, imgSrc) {
     
 }
 
+function setIrImgSize(irDivId) {
+
+    getContainerSize = function($container) {
+        var h = $container.height();
+        var w = $container.width();
+        return Math.min(h, w);
+    }
+    var $div = $('#' + irDivId);
+    var divSize = getContainerSize($div.closest('div.row')) - 20;
+    $div.find('img').height(divSize).width(divSize);
+    $(window).resize(function() {
+        var size = getContainerSize($div);
+        $div.find('img').height(size).width(size);
+    });
+}
