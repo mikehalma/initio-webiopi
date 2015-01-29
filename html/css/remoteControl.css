@@ -22,15 +22,7 @@ button.Default, div.Default {
     background: -moz-linear-gradient(#5C5C9D, #29296A); /* For Firefox 3.6 to 15 */
     background: linear-gradient(#5C5C9D, #29296A); /* Standard syntax */
     border-radius: 75px;
-}
-
-div.Default {
-    border-radius: 25px;
-}
-
-.grid-container{
-    width: 100%; 
-    max-width: 1200px;      
+    box-shadow: 5px 5px 2px #888888;
 }
 
 .row {
@@ -60,11 +52,6 @@ div.Default {
 .col-2{ width: 50%; }
 .col-3{ width: 33.33%; }
 .col-4{ width: 25%; }
-
-.outline, .outline *{
-    outline: 1px solid #F6A1A1; 
-}
-
 
 /*-- some extra column content styling --*/
 [class*='col-'] > p {

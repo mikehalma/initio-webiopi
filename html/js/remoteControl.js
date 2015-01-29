@@ -97,7 +97,13 @@ webiopi().ready(function() {
     $("#row3").append(reverseRight);
     setImg('reverseRight', 'reverse-right.png');
 
-    // webiopi().refreshGPIO(true);
+    // Make the buttons feel like they are being pressed
+    $('button.Default').mousedown(function() {
+        var $this = $(this);
+        $('button.Default').css('border', '4px solid white').css('box-shadow', '5px 5px 2px #888888');
+        $this.css('border', '8px solid white').css('box-shadow', 'none');
+    });
+
 });
 
 function setImg(buttonId, imgSrc) {
@@ -127,7 +133,7 @@ function setIrImgSize(irDivId) {
         return Math.min(h, w);
     }
     var $div = $('#' + irDivId);
-    var divSize = getContainerSize($div.closest('div.row')) - 20;
+    var divSize = getContainerSize($div);
     $div.find('img').height(divSize).width(divSize);
     $(window).resize(function() {
         var size = getContainerSize($div);
