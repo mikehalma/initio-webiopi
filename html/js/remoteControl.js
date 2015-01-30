@@ -1,142 +1,175 @@
 webiopi().ready(function() {
-    var sonarUp = webiopi().createButton("sonarUp", "Sonar Up", function() {
-        webiopi().callMacro("sonarUp");
-    });
-    // $("#controls").append(sonarUp);
 
-    setInterval(function() {
-        webiopi().callMacro("irStatus", [], function(macro, args, response) {
-            var status = JSON.parse(response);
-            console.log('Status=' + status);
-            if(status.left) {
-                $('img.leftIrTrue').show();
-                $('img.leftIrFalse').hide();
-            } else {
-                $('img.leftIrFalse').show();
-                $('img.leftIrTrue').hide();
-            }
-            if(status.leftLine) {
-                $('img.leftLineTrue').show();
-                $('img.leftLineFalse').hide();
-            } else {
-                $('img.leftLineFalse').show();
-                $('img.leftLineTrue').hide();
-            }
-            if(status.right) {
-                $('img.rightIrTrue').show();
-                $('img.rightIrFalse').hide();
-            } else {
-                $('img.rightIrFalse').show();
-                $('img.rightIrTrue').hide();
-            }
-            if(status.rightLine) {
-                $('img.rightLineTrue').show();
-                $('img.rightLineFalse').hide();
-            } else {
-                $('img.rightLineFalse').show();
-                $('img.rightLineTrue').hide();
-            }
-        });
-    }, 1000);
-    setIrImgSize('leftIr');
-    setIrImgSize('rightIr');
-    setIrImgSize('leftLine');
-    setIrImgSize('rightLine');
-
-    var forwardLeft = webiopi().createButton("forwardLeft", "", function() {
-        webiopi().callMacro("forwardLeft");
-    });
-    $("#row1").append(forwardLeft);
-    setImg('forwardLeft', 'forward-left.png');
-
-    var forward = webiopi().createButton("forward", "", function() {
-        webiopi().callMacro("forward");
-    });
-    $("#row1").append(forward);
-    setImg('forward', 'forward.png');
-
-    var forwardRight = webiopi().createButton("forwardRight", "", function() {
-        webiopi().callMacro("forwardRight");
-    });
-    $("#row1").append(forwardRight);
-    setImg('forwardRight', 'forward-right.png');
-
-    var spinLeft = webiopi().createButton("spinLeft", "", function() {
-        webiopi().callMacro("spinLeft");
-    });
-    $("#row2").append(spinLeft);
-    setImg('spinLeft', 'spin-left.png');
-
-    var stop = webiopi().createButton("stop", "", function() {
-        webiopi().callMacro("stop");
-    });
-    $("#row2").append(stop);
-    setImg('stop', 'stop.png');
-
-    var spinRight = webiopi().createButton("spinRight", "", function() {
-        webiopi().callMacro("spinRight");
-    });
-    $("#row2").append(spinRight);
-    setImg('spinRight', 'spin-right.png');
-
-    var reverseLeft = webiopi().createButton("reverseLeft", "", function() {
-        webiopi().callMacro("reverseLeft");
-    });
-    $("#row3").append(reverseLeft);
-    setImg('reverseLeft', 'reverse-left.png');
-
-    var reverse = webiopi().createButton("reverse", "", function() {
-        webiopi().callMacro("reverse");
-    });
-    $("#row3").append(reverse);
-    setImg('reverse', 'reverse.png');
-
-    var reverseRight = webiopi().createButton("reverseRight", "", function() {
-        webiopi().callMacro("reverseRight");
-    });
-    $("#row3").append(reverseRight);
-    setImg('reverseRight', 'reverse-right.png');
-
-    // Make the buttons feel like they are being pressed
-    $('button.Default').mousedown(function() {
-        var $this = $(this);
-        $('button.Default').css('border', '4px solid white').css('box-shadow', '5px 5px 2px #888888');
-        $this.css('border', '8px solid white').css('box-shadow', 'none');
-    });
+    irSensors.init();
+    buttons.init();
+    return;
 
 });
 
-function setImg(buttonId, imgSrc) {
-    var $button = $('#' + buttonId);
-    $button.addClass('col-3');
-    var getSize = function() {
-        var h = $button.height();
-        var w = $button.width();
-        return Math.min(h, w);
+var buttons = (function() {
+    var self = {};
+
+    self.init = function() {
+        createButtons();
+
+    };
+
+
+    var createButtons = function() {
+
+        self.forwardLeft = new Btn.init({id: 'forwardLeft', rowId: 'row1', img: 'forward-left.png'});
+        self.forward = new Btn.init({id: 'forward', rowId: 'row1', img: 'forward.png'});
+        self.forwardRight = new Btn.init({id: 'forwardRight', rowId: 'row1', img: 'forward-right.png'});
+
+        self.spinLeft = new Btn.init({id: 'spinLeft', rowId: 'row2', img: 'spin-left.png'});
+        self.stop = new Btn.init({id: 'stop', rowId: 'row2', img: 'stop.png'});
+        self.spinRight = new Btn.init({id: 'spinRight', rowId: 'row2', img: 'spin-right.png'});
+
+        self.reverseLeft = new Btn.init({id: 'reverseLeft', rowId: 'row3', img: 'reverse-left.png'});
+        self.reverse = new Btn.init({id: 'reverse', rowId: 'row3', img: 'reverse.png'});
+        self.reverseRight = new Btn.init({id: 'reverseRight', rowId: 'row3', img: 'reverse-right.png'});
+        
+    };
+
+    return self;
+})();
+
+
+var Btn = (function() {
+    var pub = {};
+
+    pub.init = function(options) {
+        // Default the macro to be the same as the button id
+        if(!options.macroName) {
+            options.macroName = options.id;
+        }
+        pub.options = options;
+
+        // The jQuery wrapped button as displayed
+        pub.$button = webiopi().createButton(options.id, "", function() {
+            webiopi().callMacro(options.macroName);
+        });
+
+        // Add the button to the screen and configure it
+        var $row = $('#'+options.rowId);
+        $row.append(pub.$button);
+        var $img = setImg(pub.$button, options.img);
+        setPressable(pub.$button);
+
     }
-    var size = getSize();
-    $button.append("<img src='img/" + imgSrc + "' height='" + size + "' width='" + size + "' />");
-    var $img = $button.find('img');
-    $(window).resize(function() {
-        var size = getSize();
-        $img.height(size);
-        $img.width(size);
-    });
+
+    /*
+     * Assign the passed button with the passed image
+     */
+    var setImg = function($button, imgSrc) {
+        $button.addClass('col-3');
+        var imgSize = utils.getMinContainerDim($button);
+        $button.append("<img src='img/" + imgSrc + "' height='" + imgSize + "' width='" + imgSize + "' />");
+        var $img = $button.find('img');
+        $(window).resize(function() {
+            var size = getMinContainerDim($button);
+            $img.height(size);
+            $img.width(size);
+        });
+        return $img;
+    }
+
+    /*
+     * Make the button appear to be pressed
+     */
+    var setPressable = function($button) {
+        $button.mousedown(function() {
+            $('button.pressed').removeClass('pressed');
+            $button.addClass('pressed');
+        });
+    };
+
+    return pub;
+})();
+
+var irSensors = (function() {
+    var self = {};
+    self.imgs = {};
+
+    self.init = function() {
+       self.imgs.$leftIrTrue = $('img#leftIrTrue');
+       self.imgs.$leftIrFalse = $('img#leftIrFalse');
+       self.imgs.$rightIrTrue = $('img#rightIrTrue');
+       self.imgs.$rightIrFalse= $('img#rightIrFalse');
+       self.imgs.$leftLineTrue = $('img#leftLineTrue');
+       self.imgs.$leftLineFalse = $('img#leftLineFalse');
+       self.imgs.$rightLineTrue = $('img#rightLineTrue');
+       self.imgs.$rightLineFalse = $('img#rightLineFalse');
+
+       setImgSizes();
+       setInterval(pollStatus, 1000);
+    };
     
-}
+    var pollStatus = function() {
+        webiopi().callMacro("irStatus", [], function(macro, args, response) {
+            var status = JSON.parse(response);
+            if(status.left) {
+                self.imgs.$leftIrTrue.show();
+                self.imgs.$leftIrFalse.hide();
+            } else {
+                self.imgs.$leftIrTrue.hide();
+                self.imgs.$leftIrFalse.show();
+            }
+            if(status.leftLine) {
+                self.imgs.$leftLineTrue.show();
+                self.imgs.$leftLineFalse.hide();
+            } else {
+                self.imgs.$leftLineTrue.hide();
+                self.imgs.$leftLineFalse.show();
+            }
+            if(status.right) {
+                self.imgs.$rightIrTrue.show();
+                self.imgs.$rightIrFalse.hide();
+            } else {
+                self.imgs.$rightIrTrue.hide();
+                self.imgs.$rightIrFalse.show();
+            }
+            if(status.rightLine) {
+                self.imgs.$rightLineTrue.show();
+                self.imgs.$rightLineFalse.hide();
+            } else {
+                self.imgs.$rightLineTrue.hide();
+                self.imgs.$rightLineFalse.show();
+            }
+        });
+    };
 
-function setIrImgSize(irDivId) {
+    var setImgSizes = function() {
+        var setImgSize = function($div, $img) {
+            var imgSize = utils.getMinContainerDim($div);
+            $img.height(imgSize).width(imgSize);
+        }
+        for(img in self.imgs) {
+            if(!self.imgs.hasOwnProperty(img)) {
+                continue;
+            }
+            var $img = self.imgs[img];
+            var $div = $img.closest('div');
+            setImgSize($div, $img);
+            $(window).resize(function() {
+                setImgSize($div, $img);
+            });
+            $img.hide();
+        }
+    };
 
-    getContainerSize = function($container) {
+
+    return self;
+})();
+
+var utils = (function() {
+    var self = {};
+
+    self.getMinContainerDim = function($container) {
         var h = $container.height();
         var w = $container.width();
         return Math.min(h, w);
-    }
-    var $div = $('#' + irDivId);
-    var divSize = getContainerSize($div);
-    $div.find('img').height(divSize).width(divSize);
-    $(window).resize(function() {
-        var size = getContainerSize($div);
-        $div.find('img').height(size).width(size);
-    });
-}
+    };
+
+    return self;
+})();

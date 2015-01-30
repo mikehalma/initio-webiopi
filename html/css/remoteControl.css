@@ -25,10 +25,15 @@ button.Default, div.Default {
     box-shadow: 5px 5px 2px #888888;
 }
 
-.row {
+button.pressed {
+    border: 8px solid white;
+    box-shadow: none;
+}
+
+.row.detailRow {
     height: 30%;
 }
-.row.sensor {
+.row.headRow {
     height: 10%;
 }
 
