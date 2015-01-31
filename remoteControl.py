@@ -1,23 +1,34 @@
 import initio
 import webiopi
-import json
+from InitioRobot import InitioRobot
+# from Robot import Robot
 
 # Define pins for Pan/Tilt
 pan = 0
 tilt = 1
-tVal = 0 # 0 degrees is centre
-pVal = 0 # 0 degrees is centre
+tVal = 0  # 0 degrees is centre
+pVal = 0  # 0 degrees is centre
+robot = None
+
 
 def setup():
-    initio.init()
+    global robot
+    robot = InitioRobot()
+#    robot = Robot()
+
 
 def destroy():
-    initio.cleanup()
+    global robot
+    robot.destroy()
+
 
 def loop():
+    global robot
     pass
 
+
 def doServos():
+    global robot
     initio.setServo(pan, pVal)
     initio.setServo(tilt, tVal)
 
@@ -28,54 +39,62 @@ def sonarUp():
     pVal += 10
     doServos()
 
-@webiopi.macro
-def irStatus():
-    status = {}
-    status["left"] = initio.irLeft()
-    status["leftLine"] = initio.irLeftLine()
-    status["right"] = initio.irRight()
-    status["rightLine"] = initio.irRightLine()
-    return json.dumps(status)
 
 @webiopi.macro
-def rightItStatus():
-    if initio.irRight():
-        return '{"status":true}'
-    else:
-        return '{"status":false}'
+def irStatus():
+    global robot
+    return robot.irStatus()
+
 
 @webiopi.macro
 def forward():
-    initio.forward(100)
+    global robot
+    robot.forward()
+
 
 @webiopi.macro
 def stop():
-    initio.stop()
+    global robot
+    robot.stop()
+
 
 @webiopi.macro
 def reverse():
-    initio.reverse(100)
+    global robot
+    robot.reverse()
+
 
 @webiopi.macro
 def spinLeft():
-    initio.spinLeft(100)
+    global robot
+    robot.spinLeft()
+
 
 @webiopi.macro
 def spinRight():
-    initio.spinRight(100)
+    global robot
+    robot.spinRight()
+
 
 @webiopi.macro
 def forwardLeft():
-    initio.turnForward(10, 100)
+    global robot
+    robot.forwardLeft()
+
 
 @webiopi.macro
 def forwardRight():
-    initio.turnForward(100, 10)
+    global robot
+    robot.forwardRight()
+
 
 @webiopi.macro
 def reverseLeft():
-    initio.turnReverse(10, 100)
+    global robot
+    robot.reverseLeft()
+
 
 @webiopi.macro
 def reverseRight():
-    initio.turnReverse(100, 10)
+    global robot
+    robot.reverseRight()
