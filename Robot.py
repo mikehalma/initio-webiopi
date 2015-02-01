@@ -1,4 +1,5 @@
 import webiopi
+import json
 
 class Robot(object):
 
@@ -10,31 +11,35 @@ class Robot(object):
         webiopi.debug('The test robot has been destoyed')
 
     def irStatus(self):
-        webiopi.debug('The robot would sense stuff, if only it had some IR sensors')
+        webiopi.debug('I would sense stuff, if only I had some IR sensors')
+        return ''
+        status = {}
+        status["notFound"] = True
+        return json.dumps(status)
 
     def forward(self):
-        webiopi.debug('The robot would go forward, if only it had some wheels')
+        webiopi.debug('I would go forward, if only I had some wheels')
 
     def stop(self):
-        webiopi.debug("The robot would stop, if only it had some whee... OK it's stopped")
+        webiopi.debug("I would stop, if only I had some whee... OK I've stopped")
 
     def reverse(self):
-        webiopi.debug('The robot would reverse, if only it had some wheels')
+        webiopi.debug('I would reverse, if only I had some wheels')
 
     def spinLeft(self):
-        webiopi.debug('The robot would spin left, if only it had some wheels')
+        webiopi.debug('I would spin left, if only I had some wheels')
 
     def spinRight(self):
-        webiopi.debug('The robot would spin right, if only it had some wheels')
+        webiopi.debug('I would spin right, if only I had some wheels')
 
     def forwardLeft(self):
-        webiopi.debug('The robot would go forward left, if only it had some wheels')
+        webiopi.debug('I would go forward left, if only I had some wheels')
 
     def forwardRight(self):
-        webiopi.debug('The robot would go forward right, if only it had some wheels')
+        webiopi.debug('I would go forward right, if only I had some wheels')
 
     def reverseLeft(self):
-        webiopi.debug('The robot would reverse left, if only it had some wheels')
+        webiopi.debug('I would reverse left, if only I had some wheels')
 
     def reverseRight(self):
-        webiopi.debug('The robot would reverse right, if only it had some wheels')
+        webiopi.debug('I would reverse right, if only I had some wheels')
