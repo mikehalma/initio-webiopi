@@ -1,4 +1,3 @@
-import initio
 import webiopi
 from InitioRobot import InitioRobot
 # from Robot import Robot
@@ -29,8 +28,8 @@ def loop():
 
 def doServos():
     global robot
-    initio.setServo(pan, pVal)
-    initio.setServo(tilt, tVal)
+#    initio.setServo(pan, pVal)
+#    initio.setServo(tilt, tVal)
 
 
 @webiopi.macro
