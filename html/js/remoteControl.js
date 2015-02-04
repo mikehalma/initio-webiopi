@@ -67,7 +67,7 @@ var Btn = (function() {
         $button.append("<img src='img/" + imgSrc + "' height='" + imgSize + "' width='" + imgSize + "' />");
         var $img = $button.find('img');
         $(window).resize(function() {
-            var size = getMinContainerDim($button);
+            var size = utils.getMinContainerDim($button);
             $img.height(size);
             $img.width(size);
         });
@@ -140,10 +140,6 @@ var irSensors = (function() {
     };
 
     var setImgSizes = function() {
-        var setImgSize = function($div, $img) {
-            var imgSize = utils.getMinContainerDim($div);
-            $img.height(imgSize).width(imgSize);
-        }
         for(img in self.imgs) {
             if(!self.imgs.hasOwnProperty(img)) {
                 continue;
@@ -151,11 +147,16 @@ var irSensors = (function() {
             var $img = self.imgs[img];
             var $div = $img.closest('div');
             setImgSize($div, $img);
-            $(window).resize(function() {
-                setImgSize($div, $img);
-            });
             $img.hide();
         }
+    };
+    var setImgSize = function($div, $img) {
+        var imgSize = utils.getMinContainerDim($div);
+        $img.height(imgSize).width(imgSize);
+        $(window).resize(function() {
+            var size = utils.getMinContainerDim($div);
+            $img.height(size).width(size);
+        });
     };
 
 
