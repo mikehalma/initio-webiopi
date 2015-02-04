@@ -1,7 +1,9 @@
 webiopi().ready(function() {
 
-    irSensors.init();
-    buttons.init();
+    var robot = {};
+    robot.moving = false;
+    irSensors.init(robot);
+    buttons.init(robot);
     return;
 
 });
@@ -9,7 +11,8 @@ webiopi().ready(function() {
 var buttons = (function() {
     var self = {};
 
-    self.init = function() {
+    self.init = function(robot) {
+        self.robot = robot;
         createButtons();
 
     };
@@ -28,6 +31,15 @@ var buttons = (function() {
         self.reverseLeft = new Btn.init({id: 'reverseLeft', rowId: 'row3', img: 'reverse-left.png'});
         self.reverse = new Btn.init({id: 'reverse', rowId: 'row3', img: 'reverse.png'});
         self.reverseRight = new Btn.init({id: 'reverseRight', rowId: 'row3', img: 'reverse-right.png'});
+
+        $('#controls').on('click', 'button', function() {
+            var button = $(this).attr('id');
+            if(button == 'stop') {
+                self.robot.moving = false;
+            } else {
+                self.robot.moving = true;
+            }
+        });
         
     };
 
@@ -91,21 +103,30 @@ var irSensors = (function() {
     var self = {};
     self.imgs = {};
 
-    self.init = function() {
-       self.imgs.$leftIrTrue = $('img#leftIrTrue');
-       self.imgs.$leftIrFalse = $('img#leftIrFalse');
-       self.imgs.$rightIrTrue = $('img#rightIrTrue');
-       self.imgs.$rightIrFalse= $('img#rightIrFalse');
-       self.imgs.$leftLineTrue = $('img#leftLineTrue');
-       self.imgs.$leftLineFalse = $('img#leftLineFalse');
-       self.imgs.$rightLineTrue = $('img#rightLineTrue');
-       self.imgs.$rightLineFalse = $('img#rightLineFalse');
+    self.init = function(robot) {
+        self.robot = robot;
+        self.imgs.$leftIrTrue = $('img#leftIrTrue');
+        self.imgs.$leftIrFalse = $('img#leftIrFalse');
+        self.imgs.$rightIrTrue = $('img#rightIrTrue');
+        self.imgs.$rightIrFalse= $('img#rightIrFalse');
+        self.imgs.$leftLineTrue = $('img#leftLineTrue');
+        self.imgs.$leftLineFalse = $('img#leftLineFalse');
+        self.imgs.$rightLineTrue = $('img#rightLineTrue');
+        self.imgs.$rightLineFalse = $('img#rightLineFalse');
 
-       setImgSizes();
-       setInterval(pollStatus, 1000);
+        setImgSizes();
+        pollStatus(true);
+        setInterval(pollStatus, 1000);
     };
     
-    var pollStatus = function() {
+    var pollStatus = function(stationary) {
+        var pollIfStationary = false;
+        if(stationary) {
+            pollIfStationary = true;
+        }
+        if(self.robot.moving != true && pollIfStationary == false) {
+            return;
+        }
         webiopi().callMacro("irStatus", [], function(macro, args, response) {
             var status = JSON.parse(response);
             if(status.left) {
