@@ -8,6 +8,9 @@ webiopi().ready(function() {
 
 });
 
+/*
+ * Create the buttons to control the robot and attach them to the screen
+ */
 var buttons = (function() {
     var self = {};
 
@@ -46,7 +49,14 @@ var buttons = (function() {
     return self;
 })();
 
-
+/*
+ * Create an instance of a button to control some aspect of the robot.
+ * The button should be created with the function init, which expects 
+ * the options:
+ *      id - the id of the button to create
+ *      rowId - the id of the row to attach the button to
+ *      img - the name of the image to use on the button (relative to the img directory)
+ */
 var Btn = (function() {
     var pub = {};
 
@@ -99,6 +109,9 @@ var Btn = (function() {
     return pub;
 })();
 
+/*
+ * The handler for the IR sensors display
+ */
 var irSensors = (function() {
     var self = {};
     self.imgs = {};
@@ -119,11 +132,18 @@ var irSensors = (function() {
         setInterval(pollStatus, 1000);
     };
     
+    /*
+     * Get the status of the IR sensors from the server.
+     * The parameter stationary=true tells us to force the request even if 
+     * the robot is not moving (normally we would stop checking the status
+     * if the robot is stationary as the sensors should not change)
+     */
     var pollStatus = function(stationary) {
         var pollIfStationary = false;
         if(stationary) {
             pollIfStationary = true;
         }
+        // Do not check the status for a stationary robot unless we have specifically been asked to
         if(self.robot.moving != true && pollIfStationary == false) {
             return;
         }
@@ -187,6 +207,9 @@ var irSensors = (function() {
 var utils = (function() {
     var self = {};
 
+    /*
+     * Get the minimum height/width of the passed container
+     */
     self.getMinContainerDim = function($container) {
         var h = $container.height();
         var w = $container.width();

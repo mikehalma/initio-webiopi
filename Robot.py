@@ -1,6 +1,10 @@
 import webiopi
 import json
 
+# The base robot implementation as expected by the web application.
+# By extending this class, you can implement only the parts of the
+# interface that your robot supports.
+# This class can be used to test the web application.
 class Robot(object):
 
     def __init__(self):
