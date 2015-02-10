@@ -30,5 +30,6 @@ In InitioRobot.ini, uncomment the line *invert_ir_sensors: True*.
 
 # Get it working for a different robot
 * Copy InitioRobot.py to make a new robot controller
+* In remoteControl.py, change from the InitioRobot to the new robot controller you have created
 * Note that you only need to implement the methods found in the base class Robot.py - the other stuff in InitioRobot.py is currently in progress (servos etc).
 * If you do not implement a method from Robot.py then the robot will ignore that command from the web app
